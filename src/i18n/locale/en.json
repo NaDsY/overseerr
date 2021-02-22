@@ -180,7 +180,7 @@
   "components.RequestList.showingresults": "Showing <strong>{from}</strong> to <strong>{to}</strong> of <strong>{total}</strong> results",
   "components.RequestList.sortAdded": "Request Date",
   "components.RequestList.sortModified": "Last Modified",
-  "components.RequestList.status": "Status",
+  "components.RequestList.status": "Media Status",
   "components.RequestModal.AdvancedRequester.advancedoptions": "Advanced Options",
   "components.RequestModal.AdvancedRequester.animenote": "* This series is an anime.",
   "components.RequestModal.AdvancedRequester.default": "(Default)",

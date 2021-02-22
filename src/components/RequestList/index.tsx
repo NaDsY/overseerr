@@ -8,11 +8,13 @@ import Table from '../Common/Table';
 import Button from '../Common/Button';
 import { defineMessages, useIntl } from 'react-intl';
 import PageTitle from '../Common/PageTitle';
+import { useRouter } from 'next/router';
+import { useUser } from '../../hooks/useUser';
 
 const messages = defineMessages({
   requests: 'Requests',
   mediaInfo: 'Media Info',
-  status: 'Status',
+  status: 'Media Status',
   requestedAt: 'Requested At',
   modifiedBy: 'Last Modified By',
   showingresults:
@@ -35,16 +37,24 @@ type Filter = 'all' | 'pending' | 'approved' | 'processing' | 'available';
 type Sort = 'added' | 'modified';
 
 const RequestList: React.FC = () => {
+  const router = useRouter();
   const intl = useIntl();
   const [pageIndex, setPageIndex] = useState(0);
-  const [currentFilter, setCurrentFilter] = useState<Filter>('pending');
+  const { user } = useUser({
+    id: Number(router.query.userId),
+  });
+  const [currentFilter, setCurrentFilter] = useState<Filter>(
+    router.query.userId ? 'all' : 'pending'
+  );
   const [currentSort, setCurrentSort] = useState<Sort>('added');
   const [currentPageSize, setCurrentPageSize] = useState<number>(10);
 
   const { data, error, revalidate } = useSWR<RequestResultsResponse>(
     `/api/v1/request?take=${currentPageSize}&skip=${
       pageIndex * currentPageSize
-    }&filter=${currentFilter}&sort=${currentSort}`
+    }&filter=${currentFilter}&sort=${currentSort}${
+      user?.id && `&requestedBy=${user.id}`
+    }`
   );
   if (!data && !error) {
     return <LoadingSpinner />;
@@ -59,9 +69,13 @@ const RequestList: React.FC = () => {
 
   return (
     <>
-      <PageTitle title={intl.formatMessage(messages.requests)} />
+      <PageTitle
+        title={[intl.formatMessage(messages.requests), user?.displayName]}
+      />
       <div className="flex flex-col justify-between lg:items-end lg:flex-row">
-        <Header>{intl.formatMessage(messages.requests)}</Header>
+        <Header subtext={user?.displayName}>
+          {intl.formatMessage(messages.requests)}
+        </Header>
         <div className="flex flex-col flex-grow mt-2 sm:flex-row lg:flex-grow-0">
           <div className="flex flex-grow mb-2 sm:mb-0 sm:mr-2 lg:flex-grow-0">
             <span className="inline-flex items-center px-3 text-sm text-gray-100 bg-gray-800 border border-r-0 border-gray-500 cursor-default rounded-l-md">
