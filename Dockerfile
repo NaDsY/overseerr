@@ -1,7 +1,7 @@
 FROM node:14.15-alpine AS BUILD_IMAGE
 
 ARG COMMIT_TAG
-ENV COMMIT_TAG=${nads}
+ENV COMMIT_TAG=nads
 
 COPY . /app
 WORKDIR /app
